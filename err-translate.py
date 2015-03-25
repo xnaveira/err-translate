@@ -102,9 +102,9 @@ class Translate(BotPlugin):
 
         # The response we're getting from the API often has invalid syntax,
         # removing duplicate commas seems to fix it.
-        response = eval(re.sub(r',,+', ',', raw_response))
+	response = re.match('^\[\[\[\"(.*?)",".*?",".*?",".*?"\]\]', raw_response).group(1)
         try:
-            return response[0][0][0]
+            return response
         except IndexError:
             return 'Failed to perform translation.'
 
@@ -121,10 +121,10 @@ class Translate(BotPlugin):
             if words[1] in self.languages:
                 sl = words[0]
                 tl = words[1]
-                text = ' '.join(words[2:])
+                text = ' '.join(words[2:]).encode('utf-8')
             else:
                 sl = 'auto'
                 tl = words[0]
-                text = ' '.join(words[1:])
+                text = ' '.join(words[1:]).encode('utf-8')
 
         return (sl, tl, text)
